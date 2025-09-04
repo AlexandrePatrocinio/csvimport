@@ -12,7 +12,7 @@ public interface IDataAccesObject {
 
     Task<bool> BaseCheckAsync(string scriptcreatetable);
 
-    (DataTable, String) DataTableParse(string[] columns);
+    (DataTable, String) DataTableParse(string[]? columns);
 
     Task<int> InsertDataTableAsync(DataTable dataTable);
 }

@@ -5,14 +5,14 @@ var configuration = GetConfiguration();
 var options = configuration.GetSection("options");
 
 var dao = new DataAccesObject(
-        configuration.GetConnectionString("csvimport") ?? "",
+        configuration.GetConnectionString("csvimport") ?? string.Empty,
         bulkcopyboundary: options?.GetValue<int>("BulkCopyBoundary") ?? 1000
     );
 
-dao.Basename = options?.GetValue<string>("Base") ?? "";
+dao.Basename = options?.GetValue<string>("Base") ?? string.Empty;
 
 var importcsv = new CsvImporter(
-    options?.GetValue<string>("CSVPath") ?? "",
+    options?.GetValue<string>("CSVPath") ?? string.Empty,
     dao    
 );
 

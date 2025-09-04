@@ -5,11 +5,11 @@ public class CsvImporter
 {
     private readonly FileInfo _importfile;
     private readonly IDataAccesObject _dao;
-    private string[] _headerline = null!;
+    private string[]? _headerline = null!;
     private long _totalreadbytes, _totalinsertedrows, _slices = 1;
     private bool _tablecreated;
 
-    public string[] Headerline => _headerline;
+    public string[]? Headerline => _headerline;
 
     public CsvImporter(string filePath, IDataAccesObject dao) {
         if (String.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath));
@@ -30,10 +30,19 @@ public class CsvImporter
                 int cores;
 
                 switch (_importfile.Length) {
-                    case > 1048576:
+                    case > 4294967296:
                         cores = Environment.ProcessorCount;
-                        break;                    
-                    case > 52488:
+                        break;
+                    case > 268435456:
+                        cores = 16;
+                        break;
+                    case > 16777216:
+                        cores = 8;
+                        break;
+                    case > 1048576:
+                        cores = 4;
+                        break;
+                    case > 65536:
                         cores = 2;
                         break;
                     default:
@@ -145,13 +154,13 @@ public class CsvImporter
         }
     }
 
-    private void LineValuesMap(string line, DataTable dt) {
+    private void LineValuesMap(string? line, DataTable dt) {
 
         try {            
 
             var values = line?.Split(',') ?? new string[] {};
 
-            if (values.Length == _headerline.Length && values.Length == dt?.Columns.Count) {
+            if (values.Length == _headerline?.Length && values.Length == dt?.Columns.Count) {
                 var row = dt.NewRow();
                 string[] trueValues = {"sim", "yes", "oui", "1", "true"};
                 string[] falseValues = {"não", "no", "not", "non", "0", "false"};

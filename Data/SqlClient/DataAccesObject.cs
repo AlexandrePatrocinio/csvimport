@@ -1,7 +1,8 @@
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
+
 namespace Data.SqlClient;
 
 public class DataAccesObject : IDataAccesObject {
@@ -35,11 +36,11 @@ public class DataAccesObject : IDataAccesObject {
         init(CreateConnectionString(password), "CSVImport", 1000);
     }
 
-    public string ConnectionString { get; private set; }
-    public string Servername { get; set; }
-    public string Basename { get; set; }
-    public string User { get; set; } 
-    public string Tablename { get; set; }
+    public string ConnectionString { get; private set; } = string.Empty;
+    public string Servername { get; set; } = string.Empty;
+    public string Basename { get; set; } = string.Empty;
+    public string User { get; set; } = string.Empty;
+    public string Tablename { get; set; } = string.Empty;
     public int Bulkcopyboundary { get; set; }
 
     public string CreateConnectionString(string password) => $"Data Source={Servername};Initial Catalog={Basename};User ID={User};Password={password}";
@@ -84,15 +85,15 @@ public class DataAccesObject : IDataAccesObject {
         return created;
     }
 
-    public (DataTable, String) DataTableParse(string[] columns)
+    public (DataTable, String) DataTableParse(string[]? columns)
     {
         var rgx = new Regex(@"\((\w{1})\)");
-        var datatypes = columns.Select((c)=> 
+        var datatypes = columns?.Select((c)=> 
             new KeyValuePair<string, char>(
                 rgx.Replace(c,""), 
                 rgx.Match(c)?.Captures[0].Value[1] ?? 'C'
             )
-        );
+        ) ?? [];
 
         var dt = new DataTable();
         
